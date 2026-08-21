@@ -1,0 +1,6 @@
+{
+  "name": "CASA BÚNKER (Bar & Café)",
+  "description": "Web application for Casa Búnker with Link Hub, Interactive Digital Menu, AI Waiter assistant, and direct WhatsApp checkout.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
