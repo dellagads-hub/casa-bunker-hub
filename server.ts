@@ -8,7 +8,7 @@ dotenv.config();
 
 const PORT = 3000;
 
-// Cliente Lazy GenAI con variable de entorno del servidor
+// Lazy GenAI client
 let aiClient: GoogleGenAI | null = null;
 function getAIClient(): GoogleGenAI | null {
   if (!aiClient && process.env.GEMINI_API_KEY) {
@@ -104,7 +104,8 @@ Carta & Precios Oficiales en Pesos Argentinos (ARS):
 
 10. BEBIDAS SIN ALCOHOL:
 - Jugos: Jugo Naranja 500ml ($4.000), Jarra Naranja 1L ($7.500), Limonada 500ml ($4.000), Jarra Limonada 1L ($7.500).
-- Gaseosas: Pepsi, Pepsi Black, Seven Up, Mirinda ($3.000 c/u), Paso de los Toros ($2.000).
+- Gaseosas - Línea Personal (350ml - $3.000): Coca Cola 350ml [ID: gas-coca-350], Coca Cola Zero 350ml [ID: gas-coca-zero-350], Sprite 350ml [ID: gas-sprite-350], Fanta 350ml [ID: gas-fanta-350].
+- Gaseosas - Línea Compartir (1,25L - $5.500): Coca Cola 1,25L [ID: gas-coca-125], Coca Cola Zero 1,25L [ID: gas-coca-zero-125], Sprite 1,25L [ID: gas-sprite-125], Fanta Naranja 1,25L [ID: gas-fanta-125].
 - Aguas y Aquarius ($2.000 / $3.000), Energizantes ($4.000), Corona Cero ($4.000).
 
 11. BEBIDAS CON ALCOHOL:
@@ -113,7 +114,7 @@ Carta & Precios Oficiales en Pesos Argentinos (ARS):
 
 const WHATSAPP_PHONE = "5493518725482";
 
-// Generador de enlace directo a WhatsApp para pedidos
+// Helper to build WhatsApp direct link
 function buildWhatsAppOrderUrl(params: {
   customerName?: string;
   location?: string;
@@ -124,7 +125,7 @@ function buildWhatsAppOrderUrl(params: {
   const name = params.customerName || "Cliente Casa Búnker";
   const location = params.location || "Mesa en local";
   const payment = params.payment || "Efectivo / Transferencia";
-  const items = params.itemsText || "• 1x Pedido sugerido por Búnk";
+  const items = params.itemsText || "• 1x Pedido sugerido por Búnker Bot";
   const totalStr = params.total ? `$ ${params.total.toLocaleString("es-AR")}` : "";
 
   const lines = [
@@ -143,13 +144,13 @@ function buildWhatsAppOrderUrl(params: {
   if (totalStr) {
     lines.push(`💰 *TOTAL: ${totalStr}*`);
   }
-  lines.push(`✨ _Enviado desde Búnk (Carta Digital)_`);
+  lines.push(`✨ _Enviado desde Búnker Bot (Carta Digital)_`);
 
   const fullText = lines.join("\n");
   return `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(fullText)}`;
 }
 
-// Fallback conversacional local cuando no hay conexión externa
+// Fallback intelligent conversation engine when GEMINI_API_KEY is not configured
 function processLocalMozoResponse(message: string, cartItems: any[] = []): {
   reply: string;
   suggestedItemIds: string[];
@@ -157,7 +158,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
 } {
   const q = message.toLowerCase().trim();
 
-  // Intención: Finalizar pedido / WhatsApp
+  // Intent: Finalizar / Confirmar pedido / Enviar WhatsApp
   if (
     q.includes("termin") ||
     q.includes("finaliz") ||
@@ -193,7 +194,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intención: Dulces, postres, pastelería, croissants
+  // Intent: Dulces, postres, pastelería, croissant, merienda
   if (
     q.includes("dulce") ||
     q.includes("croissant") ||
@@ -217,7 +218,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intención: Cafetería de especialidad
+  // Intent: Cafetería, café de especialidad
   if (
     q.includes("café") ||
     q.includes("cafe") ||
@@ -239,7 +240,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intención: Cervezas artesanales
+  // Intent: Cerveza artesanal, birra, noche, pintas, IPA, Honey
   if (
     q.includes("cerveza") ||
     q.includes("birra") ||
@@ -262,7 +263,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intención: Alito Formoseño
+  // Intent: Alito Formoseño / Especial de la casa
   if (
     q.includes("alito") ||
     q.includes("formoseño") ||
@@ -282,7 +283,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intención: Papas y picadas
+  // Intent: Papas y picadas
   if (q.includes("papa") || q.includes("picada") || q.includes("cheddar") || q.includes("tabla")) {
     return {
       reply:
@@ -295,7 +296,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intención: Pizzas
+  // Intent: Pizzas
   if (q.includes("pizza") || q.includes("muzzarella") || q.includes("fugazzeta") || q.includes("rucula")) {
     return {
       reply:
@@ -309,7 +310,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intención: Promos y descuentos
+  // Intent: Promos / Happy Hour
   if (q.includes("promo") || q.includes("descuento") || q.includes("oferta") || q.includes("barato")) {
     return {
       reply:
@@ -323,7 +324,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intención: Tragos y cócteles
+  // Intent: Tragos / Fernet / Gin / Cócteles
   if (q.includes("trago") || q.includes("fernet") || q.includes("gin") || q.includes("aperol") || q.includes("campari")) {
     return {
       reply:
@@ -337,7 +338,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intención: Opciones saludables / Keto / Sin TACC
+  // Intent: Saludable, Keto, Ensaladas, Sin TACC
   if (q.includes("keto") || q.includes("saludable") || q.includes("ensalada") || q.includes("light") || q.includes("tacc")) {
     return {
       reply:
@@ -351,10 +352,10 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Respuesta general
+  // Generic dynamic greeting and orientation
   return {
     reply:
-      "¡Hola! 👋 Soy Búnk, el mozo virtual de Casa Búnker. Te puedo asesorar con toda nuestra carta: desde desayunos y cafés de especialidad ☕ hasta el famoso Alito Formoseño 🥩, pizzas de masa madre 🍕 y cervezas artesanales tiradas 🍺.\n\n¿Buscás algo para comer, para tomar o alguna promo para compartir?",
+      "¡Hola! 👋 Soy **Búnker Bot**, el mozo virtual de Casa Búnker. Te puedo asesorar con toda nuestra carta: desde desayunos y cafés de especialidad ☕ hasta el famoso Alito Formoseño 🥩, pizzas de masa madre 🍕 y cervezas artesanales tiradas 🍺.\n\n¿Buscás algo para comer, para tomar o alguna promo para compartir?",
     suggestedItemIds: [
       "alito-formoseno-completo",
       "pinta-ipa-473",
@@ -370,7 +371,7 @@ async function startServer() {
 
   // Health check
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", app: "CASA BÚNKER (Bar & Café) - Búnk" });
+    res.json({ status: "ok", app: "CASA BÚNKER (Bar & Café) - Búnker Bot" });
   });
 
   // Mozo IA (Búnker Bot) API endpoint
@@ -385,12 +386,12 @@ async function startServer() {
       const client = getAIClient();
 
       if (!client) {
-        // Fallback local dinámico
+        // Fallback local dynamic logic
         const localRes = processLocalMozoResponse(message, cartItems);
         return res.json(localRes);
       }
 
-      // Formato del contexto del carrito
+      // Format cart context if user has items selected
       let cartContextStr = "CARRITO ACTUAL DEL CLIENTE:\n";
       if (Array.isArray(cartItems) && cartItems.length > 0) {
         cartContextStr += cartItems
@@ -406,9 +407,9 @@ async function startServer() {
         cartContextStr += `Cliente: ${orderDetails.customerName || "No especificado"}, Mesa/Ubicación: ${orderDetails.tableNumber || orderDetails.address || "En mesa"}, Pago: ${orderDetails.paymentMethod || "Efectivo"}\n`;
       }
 
-      // Instrucciones del sistema para Gemini
+      // Gemini AI System Instruction
       const systemInstruction = `
-Eres "Búnk", el mozo virtual experto y amigable de Casa Búnker (Bar & Café, ubicado en Poeta Lugones 412, Nueva Córdoba). Tu tono es cálido, canchero pero muy educado, servicial y eficiente, reflejando la identidad de un bar exclusivo pero relajado.
+Eres "Búnker Bot", el mozo virtual experto y amigable de Casa Búnker (Bar & Café, ubicado en Poeta Lugones 412, Nueva Córdoba). Tu tono es cálido, canchero pero muy educado, servicial y eficiente, reflejando la identidad de un bar exclusivo pero relajado.
 
 Tu objetivo es ayudar a los clientes a explorar la carta digital, recomendarles opciones según sus gustos, responder dudas sobre ingredientes y guiarlos para que realicen su pedido o reserva de la mejor manera.
 
@@ -434,7 +435,7 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
 [RECOMMENDED_IDS: "id1", "id2"]
 `;
 
-      // Formatear mensajes previos
+      // Format conversation contents for Gemini
       let contents: any = [];
       if (Array.isArray(history) && history.length > 0) {
         contents = history.slice(-6).map((h: any) => ({
@@ -447,7 +448,6 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
         parts: [{ text: message }],
       });
 
-      // Llamada a la API de Gemini
       const response = await client.models.generateContent({
         model: "gemini-3.7-flash",
         contents: contents,
@@ -459,7 +459,7 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
 
       const rawText = response.text || "¡Hola! Soy Búnker Bot. ¿En qué te puedo asesorar hoy de nuestra carta?";
 
-      // Extraer IDs recomendados
+      // Extract recommended IDs
       let cleanedText = rawText;
       let recommendedIds: string[] = [];
 
@@ -474,15 +474,15 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
             .filter(Boolean);
           recommendedIds = parsed;
         } catch {
-          // ignora errores de parseo
+          // ignore parsing error
         }
       }
 
-      // Enlace a WhatsApp
+      // Check if WhatsApp link is generated in text
       const waMatch = cleanedText.match(/https:\/\/(?:api\.whatsapp\.com\/send\?phone=5493518725482&text=|wa\.me\/5493518725482\?text=)[^\s\n\)]+/i);
       let whatsappUrl = waMatch ? waMatch[0] : undefined;
 
-      // Autogenerar enlace de WhatsApp si el usuario quiso finalizar
+      // If user clearly wanted to finish and no URL was created, build one automatically
       const lower = message.toLowerCase();
       if (!whatsappUrl && (lower.includes("termin") || lower.includes("finaliz") || lower.includes("enviar pedido") || lower.includes("cerrar"))) {
         let itemsDetail = "";
@@ -510,12 +510,13 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
       });
     } catch (err: any) {
       console.error("Error en Búnker Bot:", err);
+      // Fallback cleanly using local engine rather than static error text
       const fallback = processLocalMozoResponse(req.body.message || "", req.body.cartItems || []);
       res.json(fallback);
     }
   });
 
-  // Middleware de Vite para desarrollo y servidor estático en producción
+  // Vite middleware for development vs static in production
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },
