@@ -9,13 +9,10 @@ import {
   Sparkles,
   Plus,
   Check,
-  Coffee,
-  Beer,
   MessageCircle,
   Copy,
   ExternalLink,
   ShoppingBag,
-  Flame,
   ArrowRight
 } from 'lucide-react';
 
@@ -39,6 +36,7 @@ export const MozoIADrawer: React.FC = () => {
     orderDetails,
     generateWhatsAppLink,
   } = useCart();
+
   const [messages, setMessages] = useState<MozoMessage[]>([
     {
       id: 'welcome',
@@ -81,6 +79,7 @@ export const MozoIADrawer: React.FC = () => {
     setIsLoading(true);
 
     try {
+      // Llamada real y dinámica a la API del servidor (Gemini)
       const response = await fetch('/api/mozo-ia', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,13 +103,13 @@ export const MozoIADrawer: React.FC = () => {
           .filter((item: any): item is MenuItem => Boolean(item));
       }
 
-      // If no matched items found via IDs, attempt fallback keyword match
+      // Si no se encontraron IDs explícitos, buscar por coincidencias de nombres en el menú
       if (matchedItems.length === 0) {
         const lower = (data.reply || '').toLowerCase();
         matchedItems = MENU_ITEMS.filter((item) => lower.includes(item.nombre.toLowerCase())).slice(0, 4);
       }
 
-      // Extract whatsapp link from reply or response payload
+      // Enlace a WhatsApp
       const waFromPayload = data.whatsappUrl;
       const waFromText = (data.reply || '').match(/https:\/\/(?:api\.whatsapp\.com\/send\?phone=5493518725482&text=|wa\.me\/5493518725482\?text=)[^\s\n\)]+/i);
       let finalWaUrl = waFromPayload || (waFromText ? waFromText[0] : undefined);
@@ -172,10 +171,10 @@ export const MozoIADrawer: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      {/* Backdrop click to close */}
+      {/* Backdrop */}
       <div className="absolute inset-0" onClick={() => setIsMozoOpen(false)} />
 
-      {/* Drawer Body */}
+      {/* Drawer */}
       <div className="relative w-full max-w-lg h-full bg-[#EFE6D8] border-l border-[#DFD5C6] flex flex-col shadow-2xl z-10 animate-in slide-in-from-right duration-300">
         {/* Header */}
         <div className="p-4 border-b border-[#DFD5C6] bg-white flex items-center justify-between gap-3 shadow-xs">
@@ -209,7 +208,7 @@ export const MozoIADrawer: React.FC = () => {
           </button>
         </div>
 
-        {/* Quick Prompts Bar */}
+        {/* Sugerencias Rápidas */}
         <div className="px-4 py-2.5 bg-[#F6EFE5] border-b border-[#DFD5C6] overflow-x-auto no-scrollbar flex items-center gap-2">
           <span className="text-[11px] font-bold text-[#BA7738] shrink-0 flex items-center gap-1">
             <Sparkles className="w-3 h-3" /> Sugerencias:
@@ -225,7 +224,7 @@ export const MozoIADrawer: React.FC = () => {
           ))}
         </div>
 
-        {/* Chat Messages */}
+        {/* Mensajes del Chat */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {messages.map((msg) => {
             const isUser = msg.sender === 'user';
@@ -244,7 +243,7 @@ export const MozoIADrawer: React.FC = () => {
                   <p className="whitespace-pre-line">{msg.text}</p>
                 </div>
 
-                {/* WhatsApp Order Action Card if link is generated */}
+                {/* Tarjeta de Pedido Listo para WhatsApp */}
                 {!isUser && msg.whatsappUrl && (
                   <div className="mt-3 w-full max-w-[95%] p-3.5 rounded-2xl bg-white border border-emerald-300 shadow-sm space-y-3">
                     <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs">
@@ -289,7 +288,7 @@ export const MozoIADrawer: React.FC = () => {
                   </div>
                 )}
 
-                {/* Suggested Action Cards inside Mozo reply */}
+                {/* Tarjetas de Sugerencias de Productos para agregar al carrito */}
                 {!isUser && msg.suggestedItems && msg.suggestedItems.length > 0 && (
                   <div className="mt-2.5 w-full max-w-[95%] space-y-2">
                     <span className="text-[10px] font-bold tracking-wider text-[#BA7738] uppercase block">
@@ -356,7 +355,7 @@ export const MozoIADrawer: React.FC = () => {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Cart summary strip if items exist */}
+        {/* Resumen del Carrito */}
         {items.length > 0 && (
           <div className="px-4 py-2.5 bg-[#284233] text-white border-t border-[#DFD5C6] flex items-center justify-between gap-2 shadow-inner">
             <div className="flex items-center gap-2 text-xs">
@@ -376,7 +375,7 @@ export const MozoIADrawer: React.FC = () => {
           </div>
         )}
 
-        {/* Input Bar */}
+        {/* Barra de Entrada de Mensaje */}
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -407,5 +406,3 @@ export const MozoIADrawer: React.FC = () => {
     </div>
   );
 };
-
-
