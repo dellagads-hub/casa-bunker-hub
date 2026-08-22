@@ -8,7 +8,7 @@ dotenv.config();
 
 const PORT = 3000;
 
-// Lazy GenAI client
+// Cliente Lazy GenAI con variable de entorno del servidor
 let aiClient: GoogleGenAI | null = null;
 function getAIClient(): GoogleGenAI | null {
   if (!aiClient && process.env.GEMINI_API_KEY) {
@@ -113,7 +113,7 @@ Carta & Precios Oficiales en Pesos Argentinos (ARS):
 
 const WHATSAPP_PHONE = "5493518725482";
 
-// Helper to build WhatsApp direct link
+// Generador de enlace directo a WhatsApp para pedidos
 function buildWhatsAppOrderUrl(params: {
   customerName?: string;
   location?: string;
@@ -149,7 +149,7 @@ function buildWhatsAppOrderUrl(params: {
   return `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(fullText)}`;
 }
 
-// Fallback intelligent conversation engine when GEMINI_API_KEY is not configured
+// Fallback conversacional local cuando no hay conexión externa
 function processLocalMozoResponse(message: string, cartItems: any[] = []): {
   reply: string;
   suggestedItemIds: string[];
@@ -157,7 +157,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
 } {
   const q = message.toLowerCase().trim();
 
-  // Intent: Finalizar / Confirmar pedido / Enviar WhatsApp
+  // Intención: Finalizar pedido / WhatsApp
   if (
     q.includes("termin") ||
     q.includes("finaliz") ||
@@ -193,7 +193,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intent: Dulces, postres, pastelería, croissant, merienda
+  // Intención: Dulces, postres, pastelería, croissants
   if (
     q.includes("dulce") ||
     q.includes("croissant") ||
@@ -217,7 +217,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intent: Cafetería, café de especialidad
+  // Intención: Cafetería de especialidad
   if (
     q.includes("café") ||
     q.includes("cafe") ||
@@ -239,7 +239,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intent: Cerveza artesanal, birra, noche, pintas, IPA, Honey
+  // Intención: Cervezas artesanales
   if (
     q.includes("cerveza") ||
     q.includes("birra") ||
@@ -262,7 +262,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intent: Alito Formoseño / Especial de la casa
+  // Intención: Alito Formoseño
   if (
     q.includes("alito") ||
     q.includes("formoseño") ||
@@ -282,7 +282,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intent: Papas y picadas
+  // Intención: Papas y picadas
   if (q.includes("papa") || q.includes("picada") || q.includes("cheddar") || q.includes("tabla")) {
     return {
       reply:
@@ -295,7 +295,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intent: Pizzas
+  // Intención: Pizzas
   if (q.includes("pizza") || q.includes("muzzarella") || q.includes("fugazzeta") || q.includes("rucula")) {
     return {
       reply:
@@ -309,7 +309,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intent: Promos / Happy Hour
+  // Intención: Promos y descuentos
   if (q.includes("promo") || q.includes("descuento") || q.includes("oferta") || q.includes("barato")) {
     return {
       reply:
@@ -323,7 +323,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intent: Tragos / Fernet / Gin / Cócteles
+  // Intención: Tragos y cócteles
   if (q.includes("trago") || q.includes("fernet") || q.includes("gin") || q.includes("aperol") || q.includes("campari")) {
     return {
       reply:
@@ -337,7 +337,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Intent: Saludable, Keto, Ensaladas, Sin TACC
+  // Intención: Opciones saludables / Keto / Sin TACC
   if (q.includes("keto") || q.includes("saludable") || q.includes("ensalada") || q.includes("light") || q.includes("tacc")) {
     return {
       reply:
@@ -351,7 +351,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
     };
   }
 
-  // Generic dynamic greeting and orientation
+  // Respuesta general
   return {
     reply:
       "¡Hola! 👋 Soy **Búnker Bot**, el mozo virtual de Casa Búnker. Te puedo asesorar con toda nuestra carta: desde desayunos y cafés de especialidad ☕ hasta el famoso Alito Formoseño 🥩, pizzas de masa madre 🍕 y cervezas artesanales tiradas 🍺.\n\n¿Buscás algo para comer, para tomar o alguna promo para compartir?",
@@ -385,12 +385,12 @@ async function startServer() {
       const client = getAIClient();
 
       if (!client) {
-        // Fallback local dynamic logic
+        // Fallback local dinámico
         const localRes = processLocalMozoResponse(message, cartItems);
         return res.json(localRes);
       }
 
-      // Format cart context if user has items selected
+      // Formato del contexto del carrito
       let cartContextStr = "CARRITO ACTUAL DEL CLIENTE:\n";
       if (Array.isArray(cartItems) && cartItems.length > 0) {
         cartContextStr += cartItems
@@ -406,7 +406,7 @@ async function startServer() {
         cartContextStr += `Cliente: ${orderDetails.customerName || "No especificado"}, Mesa/Ubicación: ${orderDetails.tableNumber || orderDetails.address || "En mesa"}, Pago: ${orderDetails.paymentMethod || "Efectivo"}\n`;
       }
 
-      // Gemini AI System Instruction
+      // Instrucciones del sistema para Gemini
       const systemInstruction = `
 Eres "Búnker Bot", el mozo virtual experto y amigable de Casa Búnker (Bar & Café, ubicado en Poeta Lugones 412, Nueva Córdoba). Tu tono es cálido, canchero pero muy educado, servicial y eficiente, reflejando la identidad de un bar exclusivo pero relajado.
 
@@ -434,7 +434,7 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
 [RECOMMENDED_IDS: "id1", "id2"]
 `;
 
-      // Format conversation contents for Gemini
+      // Formatear mensajes previos
       let contents: any = [];
       if (Array.isArray(history) && history.length > 0) {
         contents = history.slice(-6).map((h: any) => ({
@@ -447,8 +447,9 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
         parts: [{ text: message }],
       });
 
+      // Llamada a la API de Gemini
       const response = await client.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-3.7-flash",
         contents: contents,
         config: {
           systemInstruction: systemInstruction,
@@ -458,7 +459,7 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
 
       const rawText = response.text || "¡Hola! Soy Búnker Bot. ¿En qué te puedo asesorar hoy de nuestra carta?";
 
-      // Extract recommended IDs
+      // Extraer IDs recomendados
       let cleanedText = rawText;
       let recommendedIds: string[] = [];
 
@@ -473,15 +474,15 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
             .filter(Boolean);
           recommendedIds = parsed;
         } catch {
-          // ignore parsing error
+          // ignora errores de parseo
         }
       }
 
-      // Check if WhatsApp link is generated in text
+      // Enlace a WhatsApp
       const waMatch = cleanedText.match(/https:\/\/(?:api\.whatsapp\.com\/send\?phone=5493518725482&text=|wa\.me\/5493518725482\?text=)[^\s\n\)]+/i);
       let whatsappUrl = waMatch ? waMatch[0] : undefined;
 
-      // If user clearly wanted to finish and no URL was created, build one automatically
+      // Autogenerar enlace de WhatsApp si el usuario quiso finalizar
       const lower = message.toLowerCase();
       if (!whatsappUrl && (lower.includes("termin") || lower.includes("finaliz") || lower.includes("enviar pedido") || lower.includes("cerrar"))) {
         let itemsDetail = "";
@@ -509,13 +510,12 @@ Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos
       });
     } catch (err: any) {
       console.error("Error en Búnker Bot:", err);
-      // Fallback cleanly using local engine rather than static error text
       const fallback = processLocalMozoResponse(req.body.message || "", req.body.cartItems || []);
       res.json(fallback);
     }
   });
 
-  // Vite middleware for development vs static in production
+  // Middleware de Vite para desarrollo y servidor estático en producción
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true },

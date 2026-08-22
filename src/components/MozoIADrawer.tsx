@@ -41,7 +41,7 @@ export const MozoIADrawer: React.FC = () => {
     {
       id: 'welcome',
       sender: 'mozo',
-      text: '¡Buenas! 👋 Soy **Búnker Bot**, el mozo virtual y asistente de Casa Búnker.\n\nEstoy acá para asesorarte con la carta digital, recomendarte maridajes (como café con croissants de pistacho 🥐 o cerveza con Alito Formoseño y papas 🥩🍟) e ir sumando lo que te guste para armar tu pedido a WhatsApp.\n\n¿Qué se te antoja hoy?',
+      text: '¡Buenas! 👋 Soy bunk, el mozo virtual y asistente de Casa Búnker.\n\nEstoy acá para asesorarte con la carta digital, recomendarte maridajes (como café con croissants de pistacho 🥐 o cerveza con Alito Formoseño y papas 🥩🍟) e ir sumando lo que te guste para armar tu pedido a WhatsApp.\n\n¿Qué se te antoja hoy?',
       timestamp: 'Ahora',
       suggestedItems: [
         MENU_ITEMS.find((i) => i.id === 'alito-formoseno-completo'),
