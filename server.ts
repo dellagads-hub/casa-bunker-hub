@@ -124,7 +124,7 @@ function buildWhatsAppOrderUrl(params: {
   const name = params.customerName || "Cliente Casa Búnker";
   const location = params.location || "Mesa en local";
   const payment = params.payment || "Efectivo / Transferencia";
-  const items = params.itemsText || "• 1x Pedido sugerido por Búnker Bot";
+  const items = params.itemsText || "• 1x Pedido sugerido por Búnk";
   const totalStr = params.total ? `$ ${params.total.toLocaleString("es-AR")}` : "";
 
   const lines = [
@@ -143,7 +143,7 @@ function buildWhatsAppOrderUrl(params: {
   if (totalStr) {
     lines.push(`💰 *TOTAL: ${totalStr}*`);
   }
-  lines.push(`✨ _Enviado desde Búnker Bot (Carta Digital)_`);
+  lines.push(`✨ _Enviado desde Búnk (Carta Digital)_`);
 
   const fullText = lines.join("\n");
   return `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(fullText)}`;
@@ -354,7 +354,7 @@ function processLocalMozoResponse(message: string, cartItems: any[] = []): {
   // Respuesta general
   return {
     reply:
-      "¡Hola! 👋 Soy **Búnker Bot**, el mozo virtual de Casa Búnker. Te puedo asesorar con toda nuestra carta: desde desayunos y cafés de especialidad ☕ hasta el famoso Alito Formoseño 🥩, pizzas de masa madre 🍕 y cervezas artesanales tiradas 🍺.\n\n¿Buscás algo para comer, para tomar o alguna promo para compartir?",
+      "¡Hola! 👋 Soy Búnk, el mozo virtual de Casa Búnker. Te puedo asesorar con toda nuestra carta: desde desayunos y cafés de especialidad ☕ hasta el famoso Alito Formoseño 🥩, pizzas de masa madre 🍕 y cervezas artesanales tiradas 🍺.\n\n¿Buscás algo para comer, para tomar o alguna promo para compartir?",
     suggestedItemIds: [
       "alito-formoseno-completo",
       "pinta-ipa-473",
@@ -370,7 +370,7 @@ async function startServer() {
 
   // Health check
   app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", app: "CASA BÚNKER (Bar & Café) - Búnker Bot" });
+    res.json({ status: "ok", app: "CASA BÚNKER (Bar & Café) - Búnk" });
   });
 
   // Mozo IA (Búnker Bot) API endpoint
@@ -408,7 +408,7 @@ async function startServer() {
 
       // Instrucciones del sistema para Gemini
       const systemInstruction = `
-Eres "Búnker Bot", el mozo virtual experto y amigable de Casa Búnker (Bar & Café, ubicado en Poeta Lugones 412, Nueva Córdoba). Tu tono es cálido, canchero pero muy educado, servicial y eficiente, reflejando la identidad de un bar exclusivo pero relajado.
+Eres "Búnk", el mozo virtual experto y amigable de Casa Búnker (Bar & Café, ubicado en Poeta Lugones 412, Nueva Córdoba). Tu tono es cálido, canchero pero muy educado, servicial y eficiente, reflejando la identidad de un bar exclusivo pero relajado.
 
 Tu objetivo es ayudar a los clientes a explorar la carta digital, recomendarles opciones según sus gustos, responder dudas sobre ingredientes y guiarlos para que realicen su pedido o reserva de la mejor manera.
 
