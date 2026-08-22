@@ -20,21 +20,30 @@ import {
 } from 'lucide-react';
 
 const QUICK_PROMPTS = [
-  '¿Qué maridaje me recomendás para una Cerveza?',
-  '¿Qué dulce me recomendás con un Café?',
-  'Quiero pedir Alito Formoseño y Pintas',
-  '¿Qué incluye el Americano Completo?',
-  'Opción saludable: Plato Keto o Ensalada',
-  'Confirmar pedido: Nombre: Juan, Mesa: 4, Pago: Efectivo',
+  '¿Qué dulce me recomendás con un Café? 🥐',
+  '¿Qué maridaje me recomendás para una Cerveza? 🍺',
+  'Quiero pedir el Alito Formoseño 🥩',
+  '¿Qué promos hay para compartir? 🔥',
+  'Opción saludable: Keto o Ensalada 🥗',
+  'Finalizar pedido y enviar a WhatsApp 📲',
 ];
 
 export const MozoIADrawer: React.FC = () => {
-  const { isMozoOpen, setIsMozoOpen, addItem } = useCart();
+  const {
+    isMozoOpen,
+    setIsMozoOpen,
+    addItem,
+    items,
+    totalCount,
+    totalPrice,
+    orderDetails,
+    generateWhatsAppLink,
+  } = useCart();
   const [messages, setMessages] = useState<MozoMessage[]>([
     {
       id: 'welcome',
       sender: 'mozo',
-      text: '¡Buenas! 👋 Soy **Búnker Bot**, el mozo virtual y asistente gastronómico exclusivo de Casa Búnker.\n\nEstoy acá para atenderte, sugerirte maridajes ideales (con café algo dulce 🥐, con cerveza papas o picadas 🧀🍺) y armar tu pedido listo para WhatsApp.\n\n¿Qué se te antoja hoy?',
+      text: '¡Buenas! 👋 Soy **Búnker Bot**, el mozo virtual y asistente de Casa Búnker.\n\nEstoy acá para asesorarte con la carta digital, recomendarte maridajes (como café con croissants de pistacho 🥐 o cerveza con Alito Formoseño y papas 🥩🍟) e ir sumando lo que te guste para armar tu pedido a WhatsApp.\n\n¿Qué se te antoja hoy?',
       timestamp: 'Ahora',
       suggestedItems: [
         MENU_ITEMS.find((i) => i.id === 'alito-formoseno-completo'),
@@ -77,6 +86,8 @@ export const MozoIADrawer: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: query,
+          cartItems: items,
+          orderDetails: orderDetails,
           history: messages.slice(-5).map((m) => ({
             role: m.sender === 'user' ? 'user' : 'model',
             text: m.text,
@@ -101,8 +112,12 @@ export const MozoIADrawer: React.FC = () => {
 
       // Extract whatsapp link from reply or response payload
       const waFromPayload = data.whatsappUrl;
-      const waFromText = (data.reply || '').match(/https:\/\/wa\.me\/5493510000000\?text=[^\s\n\)]+/i);
-      const finalWaUrl = waFromPayload || (waFromText ? waFromText[0] : undefined);
+      const waFromText = (data.reply || '').match(/https:\/\/(?:api\.whatsapp\.com\/send\?phone=5493518725482&text=|wa\.me\/5493518725482\?text=)[^\s\n\)]+/i);
+      let finalWaUrl = waFromPayload || (waFromText ? waFromText[0] : undefined);
+
+      if (!finalWaUrl && (query.toLowerCase().includes('termin') || query.toLowerCase().includes('finaliz') || query.toLowerCase().includes('whatsapp'))) {
+        finalWaUrl = generateWhatsAppLink();
+      }
 
       const mozoMsg: MozoMessage = {
         id: (Date.now() + 1).toString(),
@@ -116,16 +131,18 @@ export const MozoIADrawer: React.FC = () => {
       setMessages((prev) => [...prev, mozoMsg]);
     } catch (err) {
       console.error(err);
+      const fallbackWaUrl = items.length > 0 ? generateWhatsAppLink() : undefined;
       const errorMsg: MozoMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'mozo',
-        text: '¡Che! Soy **Búnker Bot**. Justo hay mucho movimiento en la barra, pero te súper recomiendo probar el **Alito Formoseño ($30.000)**, las **Papas con Cheddar y Verdeo ($10.000)** o una **Pinta IPA 473ml ($5.000)**. ¿Querés que te prepare el pedido?',
+        text: '¡Che! Soy **Búnker Bot**. Te súper recomiendo probar nuestro **Alito Formoseño ($30.000)**, las **Papas con Cheddar y Verdeo ($10.000)** o una **Pinta IPA 473ml ($5.000)**. ¿Querés que te prepare el pedido?',
         timestamp: 'Ahora',
         suggestedItems: [
           MENU_ITEMS.find((i) => i.id === 'alito-formoseno-completo'),
           MENU_ITEMS.find((i) => i.id === 'papas-cheddar-verdeo'),
           MENU_ITEMS.find((i) => i.id === 'pinta-ipa-473'),
         ].filter((i): i is MenuItem => Boolean(i)),
+        whatsappUrl: fallbackWaUrl,
       };
       setMessages((prev) => [...prev, errorMsg]);
     } finally {
@@ -338,6 +355,26 @@ export const MozoIADrawer: React.FC = () => {
 
           <div ref={messagesEndRef} />
         </div>
+
+        {/* Cart summary strip if items exist */}
+        {items.length > 0 && (
+          <div className="px-4 py-2.5 bg-[#284233] text-white border-t border-[#DFD5C6] flex items-center justify-between gap-2 shadow-inner">
+            <div className="flex items-center gap-2 text-xs">
+              <ShoppingBag className="w-4 h-4 text-[#EFE6D8]" />
+              <div>
+                <span className="font-semibold text-[#EFE6D8]">{totalCount} ítems en tu pedido: </span>
+                <span className="font-bold text-emerald-300">{formatPrice(totalPrice)}</span>
+              </div>
+            </div>
+            <button
+              onClick={() => handleSendMessage('Quiero finalizar y enviar mi pedido a WhatsApp')}
+              className="px-3 py-1 rounded-lg bg-[#BA7738] hover:bg-[#A8682D] text-white font-bold text-xs flex items-center gap-1 transition-all shadow-xs active:scale-95"
+            >
+              <span>Pedir por WhatsApp</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
 
         {/* Input Bar */}
         <form

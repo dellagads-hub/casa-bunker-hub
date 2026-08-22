@@ -108,9 +108,261 @@ Carta & Precios Oficiales en Pesos Argentinos (ARS):
 - Aguas y Aquarius ($2.000 / $3.000), Energizantes ($4.000), Corona Cero ($4.000).
 
 11. BEBIDAS CON ALCOHOL:
-- Cervezas: Corona 330ml ($5.000), Corona 710ml ($8.000), Stella Artois 473ml ($4.000).
-- Aperitivos & Vinos.
+- Cervezas: Corona 330ml ($5.000) [ID: corona-330], Corona 710ml ($8.000) [ID: corona-710], Stella Artois 473ml ($4.000) [ID: stella-artois-473].
 `;
+
+const WHATSAPP_PHONE = "5493518725482";
+
+// Helper to build WhatsApp direct link
+function buildWhatsAppOrderUrl(params: {
+  customerName?: string;
+  location?: string;
+  payment?: string;
+  itemsText?: string;
+  total?: number;
+}) {
+  const name = params.customerName || "Cliente Casa Búnker";
+  const location = params.location || "Mesa en local";
+  const payment = params.payment || "Efectivo / Transferencia";
+  const items = params.itemsText || "• 1x Pedido sugerido por Búnker Bot";
+  const totalStr = params.total ? `$ ${params.total.toLocaleString("es-AR")}` : "";
+
+  const lines = [
+    `🍻 *PEDIDO - CASA BÚNKER (Bar & Café)*`,
+    `📍 *Poeta Lugones 412, Nueva Córdoba*`,
+    `─────────────────────────`,
+    `👤 *Cliente:* ${name}`,
+    `🪑 *Ubicación / Mesa:* ${location}`,
+    `💳 *Medio de Pago:* ${payment}`,
+    `─────────────────────────`,
+    `📋 *DETALLE DEL PEDIDO:*`,
+    items,
+    `─────────────────────────`,
+  ];
+
+  if (totalStr) {
+    lines.push(`💰 *TOTAL: ${totalStr}*`);
+  }
+  lines.push(`✨ _Enviado desde Búnker Bot (Carta Digital)_`);
+
+  const fullText = lines.join("\n");
+  return `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(fullText)}`;
+}
+
+// Fallback intelligent conversation engine when GEMINI_API_KEY is not configured
+function processLocalMozoResponse(message: string, cartItems: any[] = []): {
+  reply: string;
+  suggestedItemIds: string[];
+  whatsappUrl?: string;
+} {
+  const q = message.toLowerCase().trim();
+
+  // Intent: Finalizar / Confirmar pedido / Enviar WhatsApp
+  if (
+    q.includes("termin") ||
+    q.includes("finaliz") ||
+    q.includes("enviar") ||
+    q.includes("confirm") ||
+    q.includes("cerrar") ||
+    q.includes("la cuenta") ||
+    q.includes("pagar") ||
+    q.includes("whatsapp")
+  ) {
+    let itemsDetail = "";
+    let total = 0;
+
+    if (cartItems && cartItems.length > 0) {
+      itemsDetail = cartItems
+        .map((i: any) => `• *${i.cantidad}x* ${i.nombre} ($${(i.precioTotal || i.precioUnitario * i.cantidad).toLocaleString("es-AR")})`)
+        .join("\n");
+      total = cartItems.reduce((acc: number, i: any) => acc + (i.precioTotal || i.precioUnitario * i.cantidad), 0);
+    } else {
+      itemsDetail = "• *1x* Alito Formoseño con papas McCain ($30.000)\n• *2x* Pinta IPA 473ml ($10.000)";
+      total = 40000;
+    }
+
+    const waUrl = buildWhatsAppOrderUrl({
+      itemsText: itemsDetail,
+      total: total,
+    });
+
+    return {
+      reply: `¡De una! Ya preparé el resumen de tu pedido. 📋\n\n${itemsDetail}\n\n💰 **Total: $ ${total.toLocaleString("es-AR")}**\n\nHacé clic en el botón de abajo para enviarlo directo a nuestra barra y cocina por WhatsApp:`,
+      suggestedItemIds: ["alito-formoseno-completo", "pinta-ipa-473"],
+      whatsappUrl: waUrl,
+    };
+  }
+
+  // Intent: Dulces, postres, pastelería, croissant, merienda
+  if (
+    q.includes("dulce") ||
+    q.includes("croissant") ||
+    q.includes("pistacho") ||
+    q.includes("nutella") ||
+    q.includes("alfajor") ||
+    q.includes("torta") ||
+    q.includes("lingote") ||
+    q.includes("cookie") ||
+    q.includes("merienda")
+  ) {
+    return {
+      reply:
+        "¡Para algo dulce tenemos opciones increíbles! 🥐🍫 Te recomiendo fuerte la **Croissant de Pistacho ($7.000)** o la de **Nutella ($7.000)**, que son súper hojaldradas y rellenas en el momento. También tenés el **Lingote de Chocotorta ($8.000)** y nuestro **Alfajor de Chocolate, DDL y Frutos Rojos ($4.800)**. Maridan perfecto con un Flat White o Capuccino. ¿Te sumo alguno?",
+      suggestedItemIds: [
+        "dulce-croissant-pistacho",
+        "dulce-croissant-nutella",
+        "lingote-chocotorta",
+        "alfajor-choco-ddl-frutos-rojos",
+      ],
+    };
+  }
+
+  // Intent: Cafetería, café de especialidad
+  if (
+    q.includes("café") ||
+    q.includes("cafe") ||
+    q.includes("flat white") ||
+    q.includes("capuccino") ||
+    q.includes("latte") ||
+    q.includes("espresso") ||
+    q.includes("desayun")
+  ) {
+    return {
+      reply:
+        "¡Excelente! Nuestro café de especialidad sale a punto perfecto. ☕ Te recomiendo un **Flat White ($4.500)** con doble shot de espresso y leche texturizada, o un **Nutella Latte ($5.600)** si te gusta con un toque dulce. Para acompañar, podés sumar una **Croissant Clásica ($3.400)** o un **Tostado de Jamón y Queso ($7.000)**.",
+      suggestedItemIds: [
+        "cafe-flat-white",
+        "cafe-nutella-latte",
+        "dulce-croissant-clasico",
+        "tostado-jamon-queso",
+      ],
+    };
+  }
+
+  // Intent: Cerveza artesanal, birra, noche, pintas, IPA, Honey
+  if (
+    q.includes("cerveza") ||
+    q.includes("birra") ||
+    q.includes("pinta") ||
+    q.includes("ipa") ||
+    q.includes("honey") ||
+    q.includes("stout") ||
+    q.includes("noche") ||
+    q.includes("previa")
+  ) {
+    return {
+      reply:
+        "¡Qué buena hora para una birra tirada! 🍺 Nuestras estrellas son la **Pinta IPA ($5.000)** y la **Pinta Honey ($5.000)**. Si vienen en grupo, sale como piña la **Promo Happy Hour Pintas x 3 ($10.000)**. Para picar algo, no falla la **Picada para 2 personas ($27.000)** o las **Papas con Cheddar y Verdeo ($10.000)**.",
+      suggestedItemIds: [
+        "pinta-ipa-473",
+        "pinta-honey-473",
+        "hh-pintas-x3",
+        "papas-cheddar-verdeo",
+      ],
+    };
+  }
+
+  // Intent: Alito Formoseño / Especial de la casa
+  if (
+    q.includes("alito") ||
+    q.includes("formoseño") ||
+    q.includes("especial") ||
+    q.includes("lomo") ||
+    q.includes("para compartir")
+  ) {
+    return {
+      reply:
+        "¡El **Alito Formoseño con papas McCain ($30.000)** es el plato insignia indiscutido de Casa Búnker! 🥩🔥 Viene con pan de miga tostado, bife de lomo premium, jamón, queso, huevo y papas crocantes (ideal para compartir entre 2 o 3). También tenemos la 1/2 porción a **$18.000**. Marida genial con una Pinta IPA o Fernet con Coca.",
+      suggestedItemIds: [
+        "alito-formoseno-completo",
+        "alito-formoseno-medio",
+        "pinta-ipa-473",
+        "trago-fernet-coca",
+      ],
+    };
+  }
+
+  // Intent: Papas y picadas
+  if (q.includes("papa") || q.includes("picada") || q.includes("cheddar") || q.includes("tabla")) {
+    return {
+      reply:
+        "¡Nuestras picadas y papas son un diez! 🍟🧀 La **Picada para 2 ($27.000)** trae variedad de quesos, fiambres, frutos secos, aceitunas y pan artesanal. Y las **Papas con Cheddar y Verdeo ($10.000)** vienen con abundante queso fundido y crocante de verdeo.",
+      suggestedItemIds: [
+        "papas-cheddar-verdeo",
+        "picada-2-personas",
+        "promo-picada-2-mas-2-pintas",
+      ],
+    };
+  }
+
+  // Intent: Pizzas
+  if (q.includes("pizza") || q.includes("muzzarella") || q.includes("fugazzeta") || q.includes("rucula")) {
+    return {
+      reply:
+        "¡Nuestras pizzas de masa madre a la piedra son imperdibles! 🍕 Te sugiero la de **Jamón Crudo y Rúcula ($18.000)** o la de **4 Quesos ($18.000)**. Si son varios, aprovechen la **Promo 2 Pizzas por $29.000** o la **Promo Pizza + 2 Pintas ($22.000)**.",
+      suggestedItemIds: [
+        "pizza-jamon-crudo-rucula",
+        "pizza-4-quesos",
+        "promo-pizza-2-pintas",
+        "promo-2-pizzas",
+      ],
+    };
+  }
+
+  // Intent: Promos / Happy Hour
+  if (q.includes("promo") || q.includes("descuento") || q.includes("oferta") || q.includes("barato")) {
+    return {
+      reply:
+        "¡Tenemos promos buenísimas hoy! 🔥\n• **Happy Hour Pintas x 3:** $10.000\n• **Promo Pizza + 2 Pintas:** $22.000\n• **Picada para 2 + 2 Pintas:** $31.000\n• **Botella Fernet 750ml + 2 Coca 1.25L:** $45.000\n• **Promo Café + Medialuna:** $6.500\n\n¿Cuál te tienta más?",
+      suggestedItemIds: [
+        "hh-pintas-x3",
+        "promo-pizza-2-pintas",
+        "promo-picada-2-mas-2-pintas",
+        "promo-fernet-750-2coca",
+      ],
+    };
+  }
+
+  // Intent: Tragos / Fernet / Gin / Cócteles
+  if (q.includes("trago") || q.includes("fernet") || q.includes("gin") || q.includes("aperol") || q.includes("campari")) {
+    return {
+      reply:
+        "¡En coctelería tenemos los mejores clásicos! 🍸 El infaltable **Fernet con Coca ($5.000)** servido bien frío en vaso copón, el **Gin Tonic ($6.000)** con botánicos premium, y el refrescante **Aperol Spritz ($6.000)**. También tenés la **Promo 3 Tragos por $15.000**.",
+      suggestedItemIds: [
+        "trago-fernet-coca",
+        "trago-gin-tonic",
+        "trago-aperol-spritz",
+        "promo-tragos-x3",
+      ],
+    };
+  }
+
+  // Intent: Saludable, Keto, Ensaladas, Sin TACC
+  if (q.includes("keto") || q.includes("saludable") || q.includes("ensalada") || q.includes("light") || q.includes("tacc")) {
+    return {
+      reply:
+        "¡Sí! Tenemos opciones frescas y saludables: el **Plato Keto ($7.000)** con huevos, palta y queso (sin harinas), el **Avocado Toast ($7.000)** y la **Ensalada César ($9.000)** con pollo grillado y aderezo casero.",
+      suggestedItemIds: [
+        "plato-keto",
+        "avocado-toast",
+        "ensalada-cesar",
+        "wrap-pollo",
+      ],
+    };
+  }
+
+  // Generic dynamic greeting and orientation
+  return {
+    reply:
+      "¡Hola! 👋 Soy **Búnker Bot**, el mozo virtual de Casa Búnker. Te puedo asesorar con toda nuestra carta: desde desayunos y cafés de especialidad ☕ hasta el famoso Alito Formoseño 🥩, pizzas de masa madre 🍕 y cervezas artesanales tiradas 🍺.\n\n¿Buscás algo para comer, para tomar o alguna promo para compartir?",
+    suggestedItemIds: [
+      "alito-formoseno-completo",
+      "pinta-ipa-473",
+      "cafe-flat-white",
+      "dulce-croissant-pistacho",
+    ],
+  };
+}
 
 async function startServer() {
   const app = express();
@@ -124,7 +376,7 @@ async function startServer() {
   // Mozo IA (Búnker Bot) API endpoint
   app.post("/api/mozo-ia", async (req, res) => {
     try {
-      const { message, history } = req.body;
+      const { message, history, cartItems, orderDetails } = req.body;
 
       if (!message || typeof message !== "string") {
         return res.status(400).json({ error: "El mensaje es obligatorio" });
@@ -133,65 +385,28 @@ async function startServer() {
       const client = getAIClient();
 
       if (!client) {
-        // Fallback local smart assistant Búnker Bot if GEMINI_API_KEY is not set
-        const lower = message.toLowerCase();
-        let replyText = "";
-        let itemIds: string[] = [];
-        let whatsappUrl = "";
-
-        // Check if user is confirming or providing order details
-        const isOrdering = lower.includes("pedido") || lower.includes("quiero pedir") || lower.includes("mesa") || lower.includes("nombre") || lower.includes("pago") || lower.includes("efectivo") || lower.includes("transferencia") || lower.includes("tarjeta");
-
-        if (lower.includes("confirmar") || (lower.includes("nombre:") && lower.includes("pago:"))) {
-          // Build WhatsApp link
-          const matchName = message.match(/nombre[:\s]+([^\n,-]+)/i);
-          const matchLocation = message.match(/(?:mesa|ubicaci[oó]n|direcci[oó]n)[:\s]+([^\n,-]+)/i);
-          const matchPayment = message.match(/(?:pago|m[eé]todo)[:\s]+([^\n,-]+)/i);
-
-          const nombre = matchName ? matchName[1].trim() : "Cliente Casa Búnker";
-          const ubicacion = matchLocation ? matchLocation[1].trim() : "Mesa a confirmar";
-          const pago = matchPayment ? matchPayment[1].trim() : "Efectivo / Transferencia";
-          const detalle = "1x Alito Formoseño ($30.000) + 2x Pinta IPA 473ml ($10.000)";
-
-          whatsappUrl = `https://wa.me/5493510000000?text=Hola%20Casa%20Búnker,%20quiero%20confirmar%20mi%20pedido:%0A%0A-Nombre:%20${encodeURIComponent(nombre)}%0A-Pedido:%20${encodeURIComponent(detalle)}%0A-Ubicación:%20${encodeURIComponent(ubicacion)}%0A-Pago:%20${encodeURIComponent(pago)}`;
-
-          replyText = `¡Excelente, ${nombre}! Ya tengo tu pedido listo para enviar a la cocina y barra:\n\n📋 **Resumen de Pedido:**\n• **Nombre:** ${nombre}\n• **Pedido:** ${detalle}\n• **Ubicación:** ${ubicacion}\n• **Pago:** ${pago}\n\nHacé clic en el siguiente enlace o en el botón para enviarlo directo a nuestro WhatsApp:\n${whatsappUrl}`;
-          itemIds = ["alito-formoseno-completo", "pinta-ipa-473"];
-        } else if (lower.includes("café") || lower.includes("cafe") || lower.includes("espresso") || lower.includes("americano") || lower.includes("flat white") || lower.includes("capuccino")) {
-          // Rule 1: Cafe -> Sugerir algo dulce / pasteleria
-          replyText = "¡Qué hacés! Si vas por un rico **Café Espresso ($3.000)**, **Flat White ($4.500)** o un **Nutella Latte ($5.600)**, te sugiero maridarlo con algo dulce como nuestro **Croissant Pistacho ($7.000)**, el **Alfajor de Chocolate, DDL y Frutos Rojos ($4.800)** o un **Roll de Canela ($5.200)**. ¡El contraste de sabores queda espectacular! ¿Querés que te sume alguno?";
-          itemIds = ["cafe-flat-white", "dulce-croissant-pistacho", "alfajor-choco-ddl-frutos-rojos", "roll-canela"];
-        } else if (lower.includes("cerveza") || lower.includes("birra") || lower.includes("pinta") || lower.includes("ipa") || lower.includes("happy hour")) {
-          // Rule 1: Cerveza -> Sugerir papas o picada / especial
-          replyText = "¡Tremenda elección! Para acompañar una **Pinta IPA 473ml ($5.000)** o aprovechar la **Promo Happy Hour Pintas x 3 ($10.000)**, te recomiendo maridarla sí o sí con nuestras **Papas con Cheddar y Verdeo ($10.000)**, una **Picada para 2 personas ($27.000)** o el imperdible **Alito Formoseño ($30.000)**. ¿Te sumo alguna?";
-          itemIds = ["pinta-ipa-473", "hh-pintas-x3", "papas-cheddar-verdeo", "picada-2-personas", "alito-formoseno-completo"];
-        } else if (lower.includes("alito") || lower.includes("formoseño") || lower.includes("lomo") || lower.includes("especial")) {
-          // Especial de la casa -> alito formoseño
-          replyText = "¡El **Alito Formoseño con papas McCain ($30.000)** es la estrella absoluta de la casa para compartir (o 1/2 porción a $18.000)! Pan de miga, bife de lomo tierno, jamón, queso, huevo y papas fritas. Queda tremendo maridado con una **Pinta Honey ($5.000)** o un **Fernet con Coca ($5.000)**.";
-          itemIds = ["alito-formoseno-completo", "alito-formoseno-medio", "pinta-honey-473", "trago-fernet-coca"];
-        } else if (lower.includes("pizza") || lower.includes("muzzarella") || lower.includes("napolitana")) {
-          replyText = "¡Nuestras pizzas a la piedra son una bomba! Probá la de **Jamón Crudo y Rúcula ($18.000)**, la de **4 Quesos ($18.000)** o aprovechá la **Promo Pizza + 2 Pintas ($22.000)**. Te sugiero maridarlas con una **Pinta Amber ($5.000)** o una copa de **La Linda Malbec ($16.000)**.";
-          itemIds = ["promo-pizza-2-pintas", "pizza-jamon-crudo-rucula", "pizza-4-quesos", "pinta-amber-473"];
-        } else if (lower.includes("papa") || lower.includes("picada")) {
-          replyText = "Nuestras **Papas con Cheddar y Verdeo ($10.000)** y la **Picada para 2 personas ($27.000)** vienen súper completas. Te sugiero maridarlas con una **Pinta IPA ($5.000)** o un **Gin Tonic ($6.000)**.";
-          itemIds = ["papas-cheddar-verdeo", "picada-2-personas", "pinta-ipa-473", "trago-gin-tonic"];
-        } else if (lower.includes("jugo") || lower.includes("sin alcohol") || lower.includes("limonada") || lower.includes("fresco")) {
-          replyText = "¡Nuestros jugos 100% naturales son exprimidos al momento! Probá el **Jugo de Naranja 500ml ($4.000)** o la **Limonada con Jengibre y Menta ($4.000)**. Quedan geniales con el **Avocado Toast ($7.000)** o el **Wrap de Pollo ($12.000)**.";
-          itemIds = ["jugo-limon-jengibre-500", "jugo-naranja-500", "avocado-toast", "wrap-pollo"];
-        } else {
-          // Default greeting
-          replyText = "¡Hola! Soy **Búnker Bot**, el mozo virtual de Casa Búnker. ☕🥪🍺🍕\n\nTe puedo recomendar los mejores platos y maridajes de nuestra nueva carta completa (por ejemplo: con café te sugiero croissants rellenos o alfajores de autor, y con birra te recomiendo el Alito Formoseño, papas con cheddar o picadas).\n\nCuando tengas tu elección, solo pasame tu **Nombre**, **Ubicación (Mesa o Dirección)** y **Método de Pago** (Efectivo, Transferencia o Tarjeta) y te preparo el pedido directo para WhatsApp.";
-          itemIds = ["alito-formoseno-completo", "papas-cheddar-verdeo", "pinta-ipa-473", "cafe-flat-white"];
-        }
-
-        return res.json({
-          reply: replyText,
-          suggestedItemIds: itemIds,
-          whatsappUrl: whatsappUrl || undefined,
-        });
+        // Fallback local dynamic logic
+        const localRes = processLocalMozoResponse(message, cartItems);
+        return res.json(localRes);
       }
 
-      // Gemini AI System Instruction with exact rules and menu
+      // Format cart context if user has items selected
+      let cartContextStr = "CARRITO ACTUAL DEL CLIENTE:\n";
+      if (Array.isArray(cartItems) && cartItems.length > 0) {
+        cartContextStr += cartItems
+          .map((i: any) => `- ${i.cantidad}x ${i.nombre} ($${i.precioTotal || i.precioUnitario * i.cantidad})`)
+          .join("\n");
+        const tot = cartItems.reduce((acc: number, i: any) => acc + (i.precioTotal || i.precioUnitario * i.cantidad), 0);
+        cartContextStr += `\nTotal acumulado: $${tot.toLocaleString("es-AR")}\n`;
+      } else {
+        cartContextStr += "El carrito está actualmente vacío.\n";
+      }
+
+      if (orderDetails) {
+        cartContextStr += `Cliente: ${orderDetails.customerName || "No especificado"}, Mesa/Ubicación: ${orderDetails.tableNumber || orderDetails.address || "En mesa"}, Pago: ${orderDetails.paymentMethod || "Efectivo"}\n`;
+      }
+
+      // Gemini AI System Instruction
       const systemInstruction = `
 Eres "Búnker Bot", el mozo virtual experto y amigable de Casa Búnker (Bar & Café, ubicado en Poeta Lugones 412, Nueva Córdoba). Tu tono es cálido, canchero pero muy educado, servicial y eficiente, reflejando la identidad de un bar exclusivo pero relajado.
 
@@ -201,20 +416,28 @@ Reglas de Interacción:
 1. Conocimiento de la Carta: Conoces a la perfección todas las categorías: Happy Hour & Promos, Cafetería, Acompañamientos Dulces, Salados & Brunch, Especiales de la casa (como el Alito Formoseño), Almuerzos, Papas y Picadas, Pizzas de masa madre, Cervezas tiradas, Tragos, Vinos y Bebidas.
 2. Recomendaciones Personalizadas: Si un cliente te pide algo dulce, recomiéndale las croissants rellenas (como la de pistacho o Nutella) o los lingotes. Si es de noche, sugiere las pintas artesanales (IPA, Honey, Stout) acompañadas de una picada o una pizza.
 3. Venta Consultiva: Si te preguntan por promos, destaca el ahorro y los agregados (por ejemplo, las promos de pizzas con pintas o el Fernet con Coca).
-4. Límites: Si te consultan por algo fuera de Casa Búnker o de la atención en el local, redirige amablemente la conversación hacia los productos del menú o los canales de contacto y reservas por WhatsApp.
+4. Límites: Si te consultan por algo fuera de Casa Búnker o de la atención en el local, redirige amablemente la conversación hacia los productos del menú o los canales de contacto y reservas por WhatsApp (+54 9 351 872-5482).
 5. Formato: Usa un lenguaje claro, cercano, acorde al público de Nueva Córdoba, Argentina, y utiliza emojis de forma moderada para hacer la charla más fluida y agradable.
+
+INFORMACIÓN DEL ESTADO ACTUAL:
+${cartContextStr}
 
 CARTA Y MENÚ OFICIAL COMPLETO DE CASA BÚNKER:
 ${MENU_CONTEXT}
 
-Al final de tu respuesta, si recomendaste productos específicos de la carta, incluye la etiqueta:
-[RECOMMENDED_IDS: "id1", "id2"] con los IDs correspondientes de los productos sugeridos.
+INSTRUCCIÓN ESPECIAL DE FINALIZACIÓN:
+Si el cliente dice que ya terminó, quiere enviar su pedido o finalizar, redacta un resumen claro y genera el enlace listo para WhatsApp usando el formato:
+https://api.whatsapp.com/send?phone=5493518725482&text=... (con el texto codificado en URL con los productos elegidos, total y datos).
+
+FORMATO DE PRODUCTOS RECOMENDADOS:
+Al final de tu mensaje, incluye siempre la etiqueta con los IDs de los productos relevantes sugeridos:
+[RECOMMENDED_IDS: "id1", "id2"]
 `;
 
       // Format conversation contents for Gemini
       let contents: any = [];
       if (Array.isArray(history) && history.length > 0) {
-        contents = history.map((h: any) => ({
+        contents = history.slice(-6).map((h: any) => ({
           role: h.role === "user" ? "user" : "model",
           parts: [{ text: h.text }],
         }));
@@ -225,7 +448,7 @@ Al final de tu respuesta, si recomendaste productos específicos de la carta, in
       });
 
       const response = await client.models.generateContent({
-        model: "gemini-3.7-flash",
+        model: "gemini-2.5-flash",
         contents: contents,
         config: {
           systemInstruction: systemInstruction,
@@ -254,9 +477,30 @@ Al final de tu respuesta, si recomendaste productos específicos de la carta, in
         }
       }
 
-      // Check if WhatsApp link is generated in the text
-      const waMatch = cleanedText.match(/https:\/\/wa\.me\/5493510000000\?text=[^\s\n\)]+/i);
-      const whatsappUrl = waMatch ? waMatch[0] : undefined;
+      // Check if WhatsApp link is generated in text
+      const waMatch = cleanedText.match(/https:\/\/(?:api\.whatsapp\.com\/send\?phone=5493518725482&text=|wa\.me\/5493518725482\?text=)[^\s\n\)]+/i);
+      let whatsappUrl = waMatch ? waMatch[0] : undefined;
+
+      // If user clearly wanted to finish and no URL was created, build one automatically
+      const lower = message.toLowerCase();
+      if (!whatsappUrl && (lower.includes("termin") || lower.includes("finaliz") || lower.includes("enviar pedido") || lower.includes("cerrar"))) {
+        let itemsDetail = "";
+        let tot = 0;
+        if (cartItems && cartItems.length > 0) {
+          itemsDetail = cartItems.map((i: any) => `• ${i.cantidad}x ${i.nombre} ($${(i.precioTotal || i.precioUnitario * i.cantidad).toLocaleString("es-AR")})`).join("\n");
+          tot = cartItems.reduce((acc: number, i: any) => acc + (i.precioTotal || i.precioUnitario * i.cantidad), 0);
+        } else {
+          itemsDetail = "• 1x Alito Formoseño con papas McCain ($30.000)\n• 2x Pinta IPA 473ml ($10.000)";
+          tot = 40000;
+        }
+        whatsappUrl = buildWhatsAppOrderUrl({
+          customerName: orderDetails?.customerName,
+          location: orderDetails?.tableNumber ? `Mesa N° ${orderDetails.tableNumber}` : orderDetails?.address,
+          payment: orderDetails?.paymentMethod,
+          itemsText: itemsDetail,
+          total: tot,
+        });
+      }
 
       res.json({
         reply: cleanedText,
@@ -265,11 +509,9 @@ Al final de tu respuesta, si recomendaste productos específicos de la carta, in
       });
     } catch (err: any) {
       console.error("Error en Búnker Bot:", err);
-      res.status(500).json({
-        reply:
-          "¡Hola che! Soy **Búnker Bot**. Justo hay mucho movimiento en el local, pero te recomiendo probar nuestra **Búnker Double ($6.500)** con una **Cerveza Artesanal Pint 500ml ($2.800)** o la **Tabla de Papas Búnker ($4.200)**. ¿Querés que te tome el pedido?",
-        suggestedItemIds: ["burger-bunker-double", "papas-tabla-bunker", "cerveza-artesanal-pinta-500"],
-      });
+      // Fallback cleanly using local engine rather than static error text
+      const fallback = processLocalMozoResponse(req.body.message || "", req.body.cartItems || []);
+      res.json(fallback);
     }
   });
 
