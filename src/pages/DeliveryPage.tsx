@@ -88,7 +88,7 @@ export const DeliveryPage: React.FC<DeliveryPageProps> = ({ onNavigate }) => {
             No tienes productos en tu pedido
           </h2>
           <p className="text-xs text-[#635B4F] mb-6">
-            Selecciona cafés, smash burgers, birras artesanales o combos desde nuestra carta digital.
+            Selecciona cafés, tostados, alito formoseño, birras artesanales o combos desde nuestra carta digital.
           </p>
           <button
             onClick={() => onNavigate('carta')}

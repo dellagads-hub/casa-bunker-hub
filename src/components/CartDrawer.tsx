@@ -118,7 +118,7 @@ export const CartDrawer: React.FC = () => {
                 Tu pedido está vacío
               </h3>
               <p className="text-xs text-[#635B4F] max-w-xs mx-auto mb-6">
-                Explora la carta y agrega tus cafés, hamburguesas, birras tiradas o combos favoritos.
+                Explora la carta y agrega tus cafés, tostados, pizzas, birras tiradas o combos favoritos.
               </p>
               <button
                 onClick={() => setIsCartOpen(false)}
