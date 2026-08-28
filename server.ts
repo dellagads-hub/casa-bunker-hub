@@ -34,82 +34,160 @@ Carta & Precios Oficiales en Pesos Argentinos (ARS):
   * Happy Hour Tragos x 3 (3 tragos de la carta clásica) - $12.000 [ID: hh-tragos-x3]
   * Promo Pinta x 3 (3 pintas de 473ml a elección) - $12.000 [ID: promo-pinta-x3]
   * Promo Tragos x 3 (3 tragos de la carta clásica) - $15.000 [ID: promo-tragos-x3]
-  * Promo Fernet 750 ml + 2 Coca 1.25 l (Botella con hielo) - $45.000 [ID: promo-fernet-750-2coca]
-  * Balde de Coronas 710ml x 4 (Hielo y rodajas de limón) - $30.000 [ID: promo-balde-coronas-710]
+  * Promo Papas + 2 Pintas - $14.000 [ID: promo-papas-2-pintas]
+  * Promo Pizza + 2 Pintas - $22.000 [ID: promo-pizza-2-pintas]
+  * Promo 2 Pizzas - $29.000 [ID: promo-2-pizzas]
+  * Promo 2 Pizzas + 4 Pintas - $37.000 [ID: promo-2-pizzas-4-pintas]
+  * Semana de Pizza - $24.000 [ID: promo-semana-pizza]
   * Picada para 2 más 2 Pintas - $31.000 [ID: promo-picada-2-mas-2-pintas]
   * Picada para 4 más 4 Pintas - $58.000 [ID: promo-picada-4-mas-4-pintas]
-  * Promo 2 Pizzas (A elección) - $29.000 [ID: promo-2-pizzas]
-  * Promo Pizza + 2 Pintas - $22.000 [ID: promo-pizza-2-pintas]
-  * Promo 2 Pizzas + 4 Pintas - $37.000 [ID: promo-2-pizzas-4-pintas]
+  * Promo Fernet 750 ml + 2 Coca 1.25 l - $45.000 [ID: promo-fernet-750-2coca]
+  * Promo Fernet 750 ml - $40.000 [ID: promo-fernet-750]
+  * Balde de Coronas 710ml x 4 - $30.000 [ID: promo-balde-coronas-710]
   * Promo Café + Medialuna o Croissant - $6.500 [ID: promo-cafe-medialuna-croissant]
+  * Promo Infusión - $3.500 [ID: promo-infusion]
 
 2. CAFETERÍA:
 - Clásicos:
   * Espresso ($3.000) [ID: cafe-espresso]
+  * Doppio ($3.500) [ID: cafe-doppio]
   * Americano ($3.800) [ID: cafe-americano]
-  * Doppio ($3.800) [ID: cafe-doppio]
   * Cortadito ($4.000) [ID: cafe-cortadito]
   * Flat White ($4.500) [ID: cafe-flat-white]
-  * Capuccino ($4.800) [ID: cafe-capuccino]
   * Latte ($4.300) [ID: cafe-latte]
+  * Capuccino ($4.800) [ID: cafe-capuccino]
 - Especiales:
   * Mocaccino ($5.000) [ID: cafe-mocaccino]
   * Submarino ($4.500) [ID: cafe-submarino]
-  * Matcha Latte ($5.500) [ID: cafe-matcha-latte]
-  * Caramel Macchiato ($5.000) [ID: cafe-caramel-macchiato]
-  * Espresso Tonic ($5.200) [ID: cafe-espresso-tonic]
+  * Caramel Macchiato ($5.500) [ID: cafe-caramel-macchiato]
   * Darkmallow ($5.500) [ID: cafe-darkmallow]
+  * Espresso Tonic ($5.200) [ID: cafe-espresso-tonic]
+  * Ice Coffee ($5.000) [ID: cafe-ice-coffee]
+  * Matcha Latte ($5.800) [ID: cafe-matcha-latte]
   * Nutella Latte ($5.600) [ID: cafe-nutella-latte]
+  * Chocolatada ($3.000) [ID: cafe-chocolatada]
 - Otras Infusiones:
   * Mate Cocido ($3.000) [ID: infusion-mate-cocido]
-  * Té Negro Orgánico ($4.500) [ID: infusion-te-negro-organico]
-  * Té Verde Orgánico ($4.500) [ID: infusion-te-verde-organico]
+  * Té Negro Hebras ($4.500) [ID: infusion-te-negro-organico]
+  * Té Verde Hebras ($4.500) [ID: infusion-te-verde-organico]
 
 3. ACOMPAÑAMIENTOS DULCES:
-- Medialunas & Croissants: Medialuna ($3.400), Croissant ($3.400), Croissant Pistacho ($7.000), Croissant Frutos Rojos ($7.000), Croissant Bonobon ($7.000), Croissant Nutella ($7.000).
-- Cookies: Cookie Oreo ($5.200), Cookie Manjar ($5.200), Cookie Red Velvet ($5.200), Cookie Pistacho ($5.200).
-- Alfajores: Alfajor Pistacho ($4.800), Alfajor Maní ($4.800), Alfajor Chocolate, DDL y Frutos Rojos ($4.800).
-- Minicakes & Lingotes: Minicake de Ganache ($8.000), Minicake de Ricota ($8.000), Minicake de Lemon Pie ($8.000), Lingote de Chocotorta ($8.000), Lingote de Selva Negra ($8.000).
-- Budines: Porción Budín Banana ($4.200), Porción Budín Limón y Arándanos ($4.200), Porción Budín Carrot Cake ($4.200).
-- Rolls & Más: Roll de Canela ($5.200), Roll de Chocolate ($4.600), Al Vuelo ($7.000).
+- Medialunas & Croissants: Medialuna ($3.400) [ID: dulce-medialuna], Croissant ($3.400) [ID: dulce-croissant], Croissant Pistacho ($7.000) [ID: dulce-croissant-pistacho], Croissant de Nutella ($7.000) [ID: dulce-croissant-nutella], Croissant Frutos Rojos ($7.000) [ID: dulce-croissant-frutos-rojos], Croissant Bonobon ($7.000) [ID: dulce-croissant-bonobon].
+- Alfajores ($4.800): Alfajor Chocolate [ID: alfajor-choco-ddl-frutos-rojos], Alfajor Maní [ID: alfajor-mani], Alfajor Pistacho [ID: alfajor-pistacho].
+- Minicakes & Lingotes: Lingotes de Chocotorta ($8.000) [ID: lingote-chocotorta], Minicake Lemon Pie ($8.000) [ID: minicake-lemon-pie].
+- Budines ($4.200): Porción Budín Banana [ID: budin-banana], Porción Budín Limón [ID: budin-limon], Porción Budín Carrot Cake [ID: budin-carrot].
+- Rolls & Más: Roll de Canela ($5.200) [ID: roll-canela], Roll de Chocolate ($4.600) [ID: roll-chocolate], Al Vuelo ($7.000) [ID: al-vuelo].
 
 4. SALADOS & BRUNCH:
-- Tostadas: Tostado Jamón y Queso ($7.000), Tostado Jamón Crudo ($9.000), Jamón Crudo Toast ($7.000), Tostadas + 2 Dips ($4.000), Tostadas con Huevo y Palta ($4.500).
-- Croissants: Croissant Mafalda ($7.000), Croissant Jamón Crudo ($8.000), Croissant Avocado ($7.000).
-- Avocados: Avocado Toast ($7.000).
-- Keto: Plato Keto ($7.000 - sin TACC).
-- Americano Completo: Americano Completo ($9.000).
+- Tostadas: Tostado de Jamón y Queso ($7.000) [ID: tostado-jamon-queso], Tostado de Jamón y Queso Especial ($9.000) [ID: tostado-jamon-queso-especial], Tostado de Jamón Crudo ($9.000) [ID: tostado-jamon-crudo], Jamón Crudo Toast ($7.000) [ID: jamon-crudo-toast], Tostadas con 2 Dips ($4.000) [ID: tostadas-2-dips], Tostadas con Huevo y Palta ($4.500) [ID: tostadas-huevo-palta].
+- Croissants: Croissant Mafalda ($7.000) [ID: croissant-mafalda], Croissant de Jamón Crudo ($8.000) [ID: croissant-jamon-crudo], Croissant Avocado ($7.000) [ID: croissant-avocado].
+- Avocados: Avocado Toast ($7.000) [ID: avocado-toast].
+- Keto: Plato Keto ($7.000 - sin TACC) [ID: plato-keto].
+- Americano Completo: Americano Completo ($9.000) [ID: americano-completo].
 
 5. ESPECIAL DE LA CASA:
-- Alito Formoseño con papas McCain (para compartir) ($30.000) [ID: alito-formoseno-completo]
+- Alito Formoseño con papas McCain (ideal para compartir) ($30.000) [ID: alito-formoseno-completo]
 - 1/2 Alito Formoseño con papas McCain ($18.000) [ID: alito-formoseno-medio]
 
-6. ALMUERZOS:
-- Wraps: Wrap de Atún ($13.000), Wrap de Pollo ($12.000).
-- Ensaladas: Ensalada César ($9.000), Ensalada de Atún ($12.000).
-- Pollo: Pollo con Guarnición ($12.000).
-- Sandwiches: Club Sandwich ($13.000).
+6. ALMUERZOS & COMIDAS:
+- Sandwiches & Wraps:
+  * Club Sandwich ($13.000) [ID: club-sandwich]
+  * Wrap de Atún ($13.000) [ID: wrap-atun]
+  * Wrap de Pollo ($12.000) [ID: wrap-pollo]
+- Ensaladas: Ensalada César ($9.000) [ID: ensalada-cesar], Ensalada de Atún ($12.000) [ID: ensalada-atun].
+- Platos & Minutas:
+  * Pollo con Guarnición ($12.000) [ID: pollo-guarnicion]
+  * Empanada por Unidad ($2.500) [ID: empanada-unidad]
+  * Empanadas x Media Docena 6u ($13.000) [ID: empanada-media-docena]
+  * Empanadas x Docena 12u ($24.000) [ID: empanada-docena]
+  * Porción de Locro ($15.000) [ID: porcion-locro]
+  * Menú para 1 ($33.500) [ID: menu-para-1]
+  * Menú para 2 ($66.000) [ID: menu-para-2]
 
 7. PAPAS Y PICADAS:
-- Papas Fritas: Papas Regulares ($8.000), Papas con Cheddar y Verdeo ($10.000).
-- Picadas: Picada para 2 personas ($27.000), Picada para 4 personas ($50.000).
+- Papas Fritas:
+  * Papas Regulares ($10.000) [ID: papas-regulares]
+  * Papas con cheddar y verdeo ($12.000) [ID: papas-cheddar-verdeo]
+  * Papas con cheddar, verdeo y panceta ($15.000) [ID: papas-cheddar-panceta]
+- Picadas:
+  * Picada Fría para 2 Personas ($27.000) [ID: picada-2-personas]
+  * Picada Fría para 4 Personas ($50.000) [ID: picada-4-personas]
 
-8. PIZZAS:
-- Masa de la casa: Muzzarella ($15.000), Napolitana ($15.000), Especial ($18.000), 4 Quesos ($18.000), Jamón Crudo y Rúcula ($18.000), Pepperoni ($18.000).
+8. PIZZAS (Masa de la casa a la piedra):
+- Pizza Muzzarella ($15.000) [ID: pizza-muzzarella]
+- Pizza Napolitana ($15.000) [ID: pizza-napolitana]
+- Pizza Especial ($18.000) [ID: pizza-especial]
+- Pizza 4 Quesos ($18.000) [ID: pizza-4-quesos]
+- Pizza Rúcula y Crudo ($18.000) [ID: pizza-rucula-crudo]
+- Pizza Pepperoni ($18.000) [ID: pizza-pepperoni]
 
-9. CERVEZAS TIRADAS & TRAGOS:
-- Cervezas Tiradas ($5.000): Pinta Pilsen, Pinta IPA, Pinta Red, Pinta Honey, Pinta Amber, Pinta Barley, Pinta Stout, Pinta Neipa.
-- Tragos: Fernet con Coca ($5.000), Gin Tonic ($6.000), Aperol Spritz ($6.000), Campari Tonic ($5.500), Vermut de la Casa ($5.000).
-- Vinos: Norton Cosecha Tardío Blanco ($7.000), Anaia Malbec ($12.000), El Cazador Malbec ($8.000), La Linda Malbec ($16.000), Luigi Bosca Malbec ($25.000), Trumpeter Reserva Malbec ($18.000).
+9. CERVEZAS TIRADAS, TRAGOS & VINOS:
+- Cervezas Tiradas Pintas 473ml ($5.000):
+  * Pinta Pilsen Ogham [ID: pinta-pilsen-ogham]
+  * Pinta IPA Ogham [ID: pinta-ipa-ogham]
+  * Pinta Red Lather IPA [ID: pinta-red-lather]
+  * Pinta Honey Lather [ID: pinta-honey-lather]
+  * Pinta Amber Lager [ID: pinta-amber-lager]
+  * Pinta Barley Ogham [ID: pinta-barley-ogham]
+  * Pinta Stout Ron y Nieve [ID: pinta-stout-ron-nieve]
+  * Pinta Neipa Mur [ID: pinta-neipa-mur]
+- Tragos ($6.000 / $5.000):
+  * Vaso Fernet con Coca ($6.000) [ID: vaso-fernet]
+  * Vaso Gin Tónica ($6.000) [ID: vaso-gin-tonica]
+  * Vaso Gin Pomelo ($6.000) [ID: vaso-gin-pomelo]
+  * Vaso Aperol Spritz ($6.000) [ID: vaso-aperol]
+  * Vaso Campari ($6.000) [ID: vaso-campari]
+  * Vaso Vermut Tónica ($6.000) [ID: vaso-vermut-tonica]
+  * Vaso Vermut Pomelo ($6.000) [ID: vaso-vermut-pomelo]
+  * Amargo Obrero Tónica ($6.000) [ID: trago-amargo-obrero-tonica]
+  * Amargo Obrero Pomelo ($6.000) [ID: trago-amargo-obrero-pomelo]
+  * Vaso Vodka ($5.000) [ID: vaso-vodka]
+  * Fernet 750ml Botella ($25.000) [ID: botella-fernet-750]
+  * Champagne ($34.000) [ID: botella-champagne]
+- Vinos:
+  * Copa de Vino ($4.000) [ID: vino-copa]
+  * Norton Cosecha Tardía Blanco ($7.000) [ID: vino-norton-cosecha-tardio]
+  * El Cazador Malbec ($8.000) [ID: vino-el-cazador-malbec]
+  * Anaia Malbec ($12.000) [ID: vino-anaia-malbec]
+  * La Linda Malbec ($16.000) [ID: vino-la-linda-malbec]
+  * Trumpeter Reserva Malbec ($18.000) [ID: vino-trumpeter-reserva-malbec]
+  * Luigi Bosca Malbec ($25.000) [ID: vino-luigi-bosca-malbec]
 
 10. BEBIDAS SIN ALCOHOL:
-- Jugos: Jugo Naranja 500ml ($4.000), Jarra Naranja 1L ($7.500), Limonada 500ml ($4.000), Jarra Limonada 1L ($7.500).
-- Gaseosas - Línea Personal (350ml - $3.000): Coca Cola 350ml [ID: gas-coca-350], Coca Cola Zero 350ml [ID: gas-coca-zero-350], Sprite 350ml [ID: gas-sprite-350], Fanta 350ml [ID: gas-fanta-350].
-- Gaseosas - Línea Compartir (1,25L - $5.500): Coca Cola 1,25L [ID: gas-coca-125], Coca Cola Zero 1,25L [ID: gas-coca-zero-125], Sprite 1,25L [ID: gas-sprite-125], Fanta Naranja 1,25L [ID: gas-fanta-125].
-- Aguas y Aquarius ($2.000 / $3.000), Energizantes ($4.000), Corona Cero ($4.000).
+- Jugos Naturales:
+  * Jugo de Naranja Vaso ($4.500) [ID: jugo-naranja-vaso]
+  * Jugo de Naranja 500ml ($4.000) [ID: jugo-naranja-500]
+  * Jugo de Naranja 1L Jarra ($7.500) [ID: jugo-naranja-jarra]
+  * Jugo Limón, Jengibre y Menta 500ml ($4.000) [ID: jugo-limon-jengibre-500]
+  * Jugo Limón, Jengibre y Menta 1L Jarra ($7.500) [ID: jugo-limon-jengibre-jarra]
+- Gaseosas - Línea Personal (350ml):
+  * Coca Cola 350ml ($3.000) [ID: gas-coca-350]
+  * Coca Cola Zero 350ml ($3.000) [ID: gas-coca-zero-350]
+  * Sprite 350ml ($3.000) [ID: gas-sprite-350]
+  * Fanta 350ml ($3.000) [ID: gas-fanta-350]
+  * Paso de los Toros Pomelo ($2.000) [ID: gas-paso-toros-pomelo]
+  * Paso de los Toros Tónica ($2.000) [ID: gas-paso-toros-tonica]
+- Gaseosas - Línea Compartir (1,25 Litros):
+  * Coca Cola 1,25L ($5.500) [ID: gas-coca-125]
+  * Coca Cola Zero 1,25L ($5.500) [ID: gas-coca-zero-125]
+  * Sprite 1,25L ($5.500) [ID: gas-sprite-125]
+  * Fanta Naranja 1,25L ($5.500) [ID: gas-fanta-125]
+- Aguas y Saborizadas:
+  * Agua 500ml ($2.000) [ID: agua-500]
+  * Aquarius (Manzana, Naranja, Pera, Pomelo, Uva Verde) 500ml ($3.000) [ID: aquarius-pomelo]
+- Energizantes & Cerveza 0%:
+  * Speed XL ($4.000) [ID: speed-xl]
+  * Red Bull 250cm ($4.000) [ID: red-bull-250]
+  * Corona Cero 330ml ($4.000) [ID: corona-cero-330]
 
-11. BEBIDAS CON ALCOHOL:
-- Cervezas: Corona 330ml ($5.000) [ID: corona-330], Corona 710ml ($8.000) [ID: corona-710], Stella Artois 473ml ($4.000) [ID: stella-artois-473].
+11. BEBIDAS CON ALCOHOL (Botellas y Latas):
+- Cervezas:
+  * Andes IPA Litro ($7.000) [ID: andes-ipa-litro]
+  * Andes Roja Litro ($7.000) [ID: andes-roja-litro]
+  * Andes Rubia Litro ($7.000) [ID: andes-rubia-litro]
+  * Corona 330ml ($5.500) [ID: corona-330]
+  * Corona 710ml ($9.000) [ID: corona-710]
+  * Stella Artois Lata 473ml ($5.200) [ID: stella-artois-lata-473]
 `;
 
 const WHATSAPP_PHONE = "5493518725482";
